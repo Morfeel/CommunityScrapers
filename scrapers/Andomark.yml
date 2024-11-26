@@ -10,12 +10,12 @@ sceneByURL:
       - bigbouncybabes.com/updates/
       - bigtoyxxx.com/updates/
       - bondagelegend.com/updates/
-      - boxofporn.info/tour/updates/      
+      - boxofporn.info/tour/updates/
       - bradsterling.elxcomplete.com/updates/
       - britstudio.xxx/updates/
       - brittanyandrewsxxx.com/updates/
       - brittanysbubbles.com/updates/
-      - charmmodels.net/updates/      
+      - charmmodels.net/updates/
       - charlieforde.com/updates/
       - chocolatepov.com/updates/
       - collectivecorruption.com/updates/
@@ -23,10 +23,10 @@ sceneByURL:
       - datingapphookup.com/updates/
       - dirtroadwarriors.com/updates/
       - dixiestrailerpark.com/tour/
-      - domingoview.com/updates/      
+      - domingoview.com/updates/
       - dreamgirlsclips.com/updates/
       - dreamorgan.com/updates/
-      - feelmevr.com/updates/      
+      - feelmevr.com/updates/
       - furrychicks.elxcomplete.com/updates/
       - grannycumshere.com/tour/
       - hollyhotwife.elxcomplete.com/updates/
@@ -38,13 +38,14 @@ sceneByURL:
       - justgoodsex.com/updates/
       - justpov.com/tour/updates/
       - lasvegasamateurs.com/tour/updates/
-      - letstryhard.com/updates/      
+      - letstryhard.com/updates/
       - mackmovies.com/updates/
       - melaniehicksxxx.com/updates/
       - msparisandfriends.com/tour/updates/
       - nicefeelings.com/updates/
       - nylons4k.com/updates/
       - oldsexygrannies.com/updates/
+      - onlybbc.com/tour/updates/
       - pawged.com/tour/updates/
       - pawgnextdoor.com/tour/updates/
       - playpetvictoria.com/updates/
@@ -61,7 +62,7 @@ sceneByURL:
       - suburbantaboo.com/tour/
       - tabooadventures.elxcomplete.com/updates/
       - tampahousewives.com/tour/
-      - test-shoots.com/updates/      
+      - test-shoots.com/updates/
       - texaspattiusa.com/updates/
       - thatfetishgirl.com/updates/
       - tmfetish.com/updates/
@@ -224,6 +225,7 @@ xPathScrapers:
                 nicefeelings: Nice Feelings
                 nylons4k: Nylons 4K
                 oldsexygrannies: OldSexyGrannies
+                onlybbc: Only BBC
                 pawged: PAWGED
                 pawgnextdoor: PAWG Next Door
                 playpetvictoria: PlaypetVictoria
@@ -243,7 +245,7 @@ xPathScrapers:
                 terapatrick: Terra Patrick
                 test-shoots.com: Test Shoots
                 texaspattiusa: TexasPattiUSA
-                thatfetishgirl: ThatFetishGirl
+                thatfetishgirl: That Fetish Girl
                 tmfetish: TMFetish
                 vanillapov: VanillaPOV
                 willtilexxx: Will Tile XXX
@@ -259,14 +261,30 @@ xPathScrapers:
                 yummysofie: Yum Sofie
                 yummywomen: Yummywomen
       Image: &image
-        selector: //base/@href | //div[@class="update_image"]/a/img[@src0_1x]/@src0_1x | //span[@class="model_update_thumb"]/img/@src
-        concat: /
+        selector: >-
+          //base/@href |
+          //div[@class="update_image"]/a/img[@src0_1x]/@src0_1x |
+          //div[@class="update_image"]/a/img[@src0_2x]/@src0_2x |
+          //div[@class="update_image"]/a/img[@src0_3x]/@src0_3x |
+          //div[@class="update_image"]/a/img[@src0_4x]/@src0_4x |
+          //span[@class="model_update_thumb"]/img/@src
+        concat: __SEP__
         postProcess:
           - replace:
               - regex: ^(https://.+)?https://
                 with: https://
+              # This strips out all of the middle results, leaving us with just the site name and the highest resolution image
+              - regex: __SEP__.+__SEP__
+                with: ""
+              # Regardless if multiple images were found we need to replace the separator with a slash to resolve the URL
+              - regex: __SEP__
+                with: ""
+              # Some sites have multiple tour pages, but the images still resolved from the root: remove 'tour1' etc.
               - regex: tour\d?///
                 with: ""
+              # If images have been resized we can get the full image instead, suffering no loss of quality (and maybe getting higher qualities!)
+              - regex: (:?-[1-4]x)?\.jpg
+                with: "-full.jpg"
       URL: //link[@rel='canonical']/@href
   proSceneScraper:
     common:
